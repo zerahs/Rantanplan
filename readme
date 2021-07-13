@@ -1,0 +1,9 @@
+- Read MRNA sequences from fasta files
+- Parse sequence and decompose into regions
+- [TODO] translate to amino acids
+- [TODO] protein
+
+Testing
+RibosomeTest.testMRNAReader
+
+
