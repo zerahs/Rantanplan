@@ -20,16 +20,13 @@ public class RibosomeTest {
     @Test
     public void testMRNAReader() throws IOException {
         List<Protein> proteins = new ArrayList<>();
-        new FastaReader().readFastaFile("fastas/pfizer.fasta").forEach(fasta1 -> {
-            proteins.add(testMRNAReader(fasta1));
-        });
+        new FastaReader().readFastaFile("fastas/pfizer.fasta").forEach(fasta1 -> proteins.add(testMRNAReader(fasta1)));
 
-        new FastaReader().readFastaFile("fastas/moderna.fasta").forEach(fasta1 -> {
-            proteins.add(testMRNAReader(fasta1));
-        });
+        new FastaReader().readFastaFile("fastas/moderna.fasta").forEach(fasta1 -> proteins.add(testMRNAReader(fasta1)));
 
-        log.info("{}",proteins);
-        // TODO compare both proteins should be the same except stop codons
+        // Check proteins are the same
+        Protein protein = proteins.get(0);
+        proteins.forEach(protein1 -> Assertions.assertEquals(protein, protein1));
 
         // TODO conventionals fasta only has the protein encoding and won't work as is
         /*new FastaReader().readFastaFile("fastas/conventionals.fasta").forEach(fasta1 -> {
@@ -51,8 +48,7 @@ public class RibosomeTest {
         Regions regions = ribosome.regions();
         Assertions.assertNotNull(regions);
         // ribosome translates to protein
-        Protein protein = ribosome.translate();
-        return protein;
+        return ribosome.translate();
 
     }
 }

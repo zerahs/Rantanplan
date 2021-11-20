@@ -1,7 +1,7 @@
 - Read MRNA sequences from fasta files
 - Parse sequence and decompose into regions
-- [TODO] translate to amino acids
-- [TODO] protein
+- Translate Protein region to amino acids
+- Compare different vaccines resulting proteins
 
 Testing
 RibosomeTest.testMRNAReader
