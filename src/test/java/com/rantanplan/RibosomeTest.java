@@ -18,18 +18,18 @@ public class RibosomeTest {
     public void testMRNAReader() throws IOException {
         List<Protein> proteins = new ArrayList<>();
         // PFIZER
-        new FastaReader().readFastaFile("fastas/pfizer.fasta").forEach(fasta1 -> proteins.add(testMRNAReader(fasta1)));
+        new FastaReader().readFastaFile("fastas/pfizer.fasta").forEach(fasta1 -> proteins.add(translateProtein(fasta1)));
         // MODERNA
-        new FastaReader().readFastaFile("fastas/moderna.fasta").forEach(fasta1 -> proteins.add(testMRNAReader(fasta1)));
+        new FastaReader().readFastaFile("fastas/moderna.fasta").forEach(fasta1 -> proteins.add(translateProtein(fasta1)));
         // Conventionals
-        new FastaReader().readFastaFile("fastas/conventionals.fasta").forEach(fasta1 -> proteins.add(testMRNAReader(fasta1)));
+        new FastaReader().readFastaFile("fastas/conventionals.fasta").forEach(fasta1 -> proteins.add(translateProtein(fasta1)));
 
         // Check proteins are the same for all vaccines
         Protein vaccineProtein = proteins.get(0);
         proteins.forEach(protein1 -> Assertions.assertEquals(vaccineProtein, protein1));
 
         // parse NCOV2 protein
-        Protein ncovProtein = testMRNAReader(new FastaReader().readFastaFile("fastas/ncov.fasta").get(0));
+        Protein ncovProtein = translateProtein(new FastaReader().readFastaFile("fastas/ncov.fasta").get(0));
         // Verify the difference of the 2 proline at index 985/986
         Assertions.assertNotEquals(AminoAcid.pro, ncovProtein.getAminoAcids().get(985));
         Assertions.assertNotEquals(AminoAcid.pro, ncovProtein.getAminoAcids().get(986));
@@ -39,7 +39,7 @@ public class RibosomeTest {
 
     }
 
-    private Protein testMRNAReader(Fasta fasta) {
+    private Protein translateProtein(Fasta fasta) {
         log.info("-----------------------------");
         log.info("-------  Read {}  -----------", fasta.header());
         log.info("-----------------------------");

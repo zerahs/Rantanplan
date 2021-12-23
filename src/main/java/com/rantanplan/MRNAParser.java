@@ -61,6 +61,7 @@ public class MRNAParser {
         // sig & spike
         // From end of 5'UTR to end Codon
         Region sigAndSpike = parseProtein(chain);
+        chain = chain.substring((int)sigAndSpike.sequence().length());
 
         // 3'UTR
         // From end of spike to poly A
@@ -100,7 +101,6 @@ public class MRNAParser {
                         .chain(String.join("", sigAndSpikeCodons))
                         .build())
                 .build();
-        chain = chain.substring(3 * sigAndSpikeCodons.size());
         return sigAndSpike;
     }
 
