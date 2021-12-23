@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @Builder
 @AllArgsConstructor
 @Slf4j
@@ -23,12 +25,20 @@ public class MRNAParser {
     private final static String[] STOP_CODONS = new String[]{"TAA", "TAG", "TGA"};
     private final static String POLY_A = "AAAAAAA"; // TODO minimum poly A size ?
     private final static int CAP_SIZE = 2;
+    private final static String[] CAPS = new String[]{"GA", "GG"};
+
 
     public Regions parse() {
         String chain = sequence.chain();
 
+        // If doesn't stat with a CAP, this should be MRNA containing only the translated region (sig+p^rotein)
+        if (!asList(CAPS).contains(chain.substring(0, 2))) {
+            return Regions.builder()
+                    .region(parseProtein(chain))
+                    .build();
+        }
+
         // CAP
-        // TODO pfizer vs moderna CAP ? GA vs GG
         Region cap = Region.builder()
                 .type(RegionEnum.cap)
                 .sequence(Sequence.builder()
@@ -50,15 +60,7 @@ public class MRNAParser {
 
         // sig & spike
         // From end of 5'UTR to end Codon
-        //TODO how to sig peptide prediction ?
-        List<String> sigAndSpikeCodons = readUntilStopCodon(chain);
-        Region sigAndSpike = Region.builder()
-                .type(RegionEnum.protein)
-                .sequence(Sequence.builder()
-                        .chain(String.join("", sigAndSpikeCodons))
-                        .build())
-                .build();
-        chain = chain.substring(3 * sigAndSpikeCodons.size());
+        Region sigAndSpike = parseProtein(chain);
 
         // 3'UTR
         // From end of spike to poly A
@@ -87,6 +89,19 @@ public class MRNAParser {
                 .region(threePrimeUtr)
                 .region(polyA)
                 .build();
+    }
+
+    private Region parseProtein(String chain) {
+        //TODO how to sig peptide prediction ?
+        List<String> sigAndSpikeCodons = readUntilStopCodon(chain);
+        Region sigAndSpike = Region.builder()
+                .type(RegionEnum.protein)
+                .sequence(Sequence.builder()
+                        .chain(String.join("", sigAndSpikeCodons))
+                        .build())
+                .build();
+        chain = chain.substring(3 * sigAndSpikeCodons.size());
+        return sigAndSpike;
     }
 
     private ArrayList<String> readUntilStopCodon(String chain) {

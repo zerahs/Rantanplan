@@ -1,2 +1,6 @@
+23/12/2021
+Parse fastas containing only protein
+Add fasta for virus protein
+
 20/11/2021
 Add protein comparison
